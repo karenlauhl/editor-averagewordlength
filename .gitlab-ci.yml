@@ -1,10 +1,22 @@
-image: ruby:3.2
 
 stages:
+  - build
   - test
+
+build:
+  stage: build
+  image: ruby:3.2
+  script:
+    - echo "Building the Ruby project..."
+    - bundle install
+  artifacts:
+    paths:
+      - Gemfile.lock
+
 
 test:
   stage: test
+  image: ruby:3.2
   script:
-    - bundle install
+    - echo "Running unit tests..."
     - bundle exec rspec
