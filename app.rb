@@ -4,7 +4,13 @@ require 'json'
 # Allow all hosts in all environments
 set :bind, '0.0.0.0'
 set :port, 5200
-set :protection, except: :http_origin # Allow cross-origin requests
+set :protection, except: :http_host 
+
+before do
+  allowed_hosts = ['averagewordlength.40341697.qpc.qubcloud.uk', 'localhost']
+  halt 403, 'Host not permitted' unless allowed_hosts.include?(request.host)
+end
+
 
 # Default route: Accepts 'text' as a query parameter
 get '/' do
