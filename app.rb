@@ -5,22 +5,25 @@ require 'json'
 set :bind, '0.0.0.0'
 set :port, 5200
 set :protection, except: :http_origin # Allow cross-origin requests
-disable :protection                    # Disable additional protection
 
 # Default route: Accepts 'text' as a query parameter
 get '/' do
   content_type :json
 
-  # Extract 'text' query parameter
+  # Check if 'text' query parameter is provided
+  unless params.key?('text')
+    halt 400, { error: "Query parameter 'text' is missing" }.to_json
+  end
+
   text = params['text']
 
   # Validate input
-  if text.nil? || text.strip.empty?
+  if text.strip.empty?
     halt 400, { error: "Query parameter 'text' cannot be empty" }.to_json
   end
 
   # Calculate average word length
-  words = text.scan(/\b\w+\b/)
+  words = text.scan(/\b[a-zA-Z]+\b/)
   total_length = words.map(&:length).sum
   average_length = words.empty? ? 0 : (total_length.to_f / words.size)
 
@@ -42,7 +45,7 @@ post '/average_word_length' do
     end
 
     text = input["text"]
-    words = text.scan(/\b\w+\b/)
+    words = text.scan(/\b[a-zA-Z]+\b/)
     total_length = words.map(&:length).sum
     average_length = words.empty? ? 0 : (total_length.to_f / words.size)
 
