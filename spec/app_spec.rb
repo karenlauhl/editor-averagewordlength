@@ -33,13 +33,12 @@ describe 'Average Word Length API' do
       expect(response_body).to eq({ "error" => "Query parameter 'text' is missing" })
     end
 
-    it "returns a 400 error if text query parameter is not provided" do
-      get '/', { invalid: "invalid" }, { 'HTTP_HOST' => 'localhost' }
-      expect(last_response.status).to eq(400)
+    it "calculates the average word length with special characters" do
+      get '/', { text: "Hello, world! This is a test." }, { 'HTTP_HOST' => 'localhost' }
+      expect(last_response).to be_ok
       response_body = JSON.parse(last_response.body)
-      expect(response_body).to eq({ "error" => "Query parameter 'text' is missing" })
+      expect(response_body["average_word_length"]).to eq(3.5) # Special characters are excluded
     end
-
   end
 
   # Test POST /average_word_length
