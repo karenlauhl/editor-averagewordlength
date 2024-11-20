@@ -6,12 +6,6 @@ set :bind, '0.0.0.0'
 set :port, 5200
 disable :protection # Disable Rack::Protection middleware
 
-# Add allowed hosts
-before do
-  allowed_hosts = ['averagewordlength.40341697.qpc.qubcloud.uk', 'localhost']
-  halt 403, 'Host not permitted' unless allowed_hosts.include?(request.host)
-end
-
 # Default route
 get '/' do
   content_type :json
