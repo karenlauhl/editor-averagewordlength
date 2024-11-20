@@ -1,10 +1,10 @@
 require 'sinatra'
 require 'json'
 
-# Allow all hosts in all environments
+# Allow all hosts and disable protection
 set :bind, '0.0.0.0'
 set :port, 5200
-set :protection, except: :http_host # Disable strict host protection
+disable :protection # Disable Rack::Protection middleware
 
 # Add allowed hosts
 before do
