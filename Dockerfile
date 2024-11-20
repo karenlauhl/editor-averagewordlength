@@ -4,11 +4,15 @@ FROM ruby:3.2
 # Set the working directory
 WORKDIR /usr/src/app
 
-# Copy the Gemfile and Gemfile.lock
+# Ensure a clean installation of dependencies
+RUN bundle config set --local clean true
+RUN bundle config set --local path 'vendor/bundle'
+
+# Copy the Gemfile and Gemfile.lock first for dependency installation
 COPY Gemfile Gemfile.lock ./
 
 # Install the gems
-RUN bundle install
+RUN bundle install --no-cache
 
 # Copy the rest of the application
 COPY . .

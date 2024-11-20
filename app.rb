@@ -1,10 +1,16 @@
 require 'sinatra'
 require 'json'
 
-# Allow all hosts and disable protection
+# Disable Host Authorization and all protection mechanisms
 set :bind, '0.0.0.0'
 set :port, 5200
-disable :protection # Disable Rack::Protection middleware
+set :protection, except: :http_host # Explicitly disable host protection
+disable :protection
+
+before do
+  puts "Incoming Host: #{request.host}"
+end
+
 
 # Default route
 get '/' do
@@ -29,31 +35,4 @@ get '/' do
 
   # Return JSON response
   { text: text, average_word_length: average_length.round(2) }.to_json
-end
-
-# POST route for calculating average word length
-post '/average_word_length' do
-  content_type :json
-
-  begin
-    request_body = request.body.read
-    input = JSON.parse(request_body)
-
-    # Validate input
-    if !input["text"] || input["text"].strip.empty?
-      halt 400, { error: "Input text cannot be empty" }.to_json
-    end
-
-    text = input["text"]
-
-    # Exclude numbers and calculate average word length
-    words = text.scan(/\b[a-zA-Z]+\b/) # Match only alphabetic words
-    total_length = words.map(&:length).sum
-    average_length = words.empty? ? 0 : (total_length.to_f / words.size)
-
-    # Return JSON response
-    { average_word_length: average_length.round(2) }.to_json
-  rescue JSON::ParserError
-    halt 400, { error: "Invalid JSON format" }.to_json
-  end
 end
