@@ -4,15 +4,15 @@ require 'json'
 # Allow all hosts in all environments
 set :bind, '0.0.0.0'
 set :port, 5200
-set :protection, except: :http_host 
+set :protection, except: :http_host # Disable strict host protection
 
+# Add allowed hosts
 before do
   allowed_hosts = ['averagewordlength.40341697.qpc.qubcloud.uk', 'localhost']
   halt 403, 'Host not permitted' unless allowed_hosts.include?(request.host)
 end
 
-
-# Default route: Accepts 'text' as a query parameter
+# Default route
 get '/' do
   content_type :json
 
@@ -28,8 +28,8 @@ get '/' do
     halt 400, { error: "Query parameter 'text' cannot be empty" }.to_json
   end
 
-  # Calculate average word length
-  words = text.scan(/\b[a-zA-Z]+\b/)
+  # Exclude numbers and calculate average word length
+  words = text.scan(/\b[a-zA-Z]+\b/) # Match only alphabetic words
   total_length = words.map(&:length).sum
   average_length = words.empty? ? 0 : (total_length.to_f / words.size)
 
@@ -51,7 +51,9 @@ post '/average_word_length' do
     end
 
     text = input["text"]
-    words = text.scan(/\b[a-zA-Z]+\b/)
+
+    # Exclude numbers and calculate average word length
+    words = text.scan(/\b[a-zA-Z]+\b/) # Match only alphabetic words
     total_length = words.map(&:length).sum
     average_length = words.empty? ? 0 : (total_length.to_f / words.size)
 
