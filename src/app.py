@@ -1,3 +1,4 @@
+import re
 from flask import Flask, jsonify, request
 from averagewordlength import calculate_average_word_length
 
@@ -29,14 +30,20 @@ def average_word_length():
     if not text:
         response["error"] = True
         response["answer"] = "No text provided. Please include a 'text' parameter."
-    else:
-        try:
-            # Calculate average word length
-            avg_length = calculate_average_word_length(text)
-            response["answer"] = avg_length
-        except Exception as e:
-            response["error"] = True
-            response["answer"] = f"An error occurred: {str(e)}"
+    
+    if not re.match("^[a-zA-Z0-9 .,!?']+$", text):
+        response["error"] = True
+        response["answer"] = "Input contains unsupported characters. Only alphanumeric text and punctuation are allowed."
+        return jsonify(response)
+
+
+    try:
+        # Calculate average word length
+        avg_length = calculate_average_word_length(text)
+        response["answer"] = avg_length
+    except Exception as e:
+        response["error"] = True
+        response["answer"] = f"An error occurred: {str(e)}"
 
     return jsonify(response)
 
