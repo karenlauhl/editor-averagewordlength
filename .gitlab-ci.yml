@@ -1,23 +1,13 @@
+image: ubuntu:22.04
 
 stages:
-  - build
-  - test
-
-build:
-  stage: build
-  image: ruby:3.2
-  script:
-    - echo "Building the Ruby project..."
-    - bundle install
-  artifacts:
-    paths:
-      - Gemfile.lock
-
+- test
 
 test:
   stage: test
-  image: ruby:3.2
   script:
-    - echo "Running unit tests..."
-    - bundle install
-    - bundle exec rspec
+  - apt-get update -qy
+  - apt-get install -y python3-pip python3
+  - cd src
+  - pip3 install Flask
+  - python3 -m unittest test

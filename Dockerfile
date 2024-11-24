@@ -1,26 +1,13 @@
-# Use Ruby 3.2 as the base image
-FROM ruby:3.2
+FROM ubuntu:22.04
 
-# Define the port number as an environment variable
-ENV PORT=5200
+RUN apt-get update -y && apt-get install -y python3-pip python3
+WORKDIR /app
 
-# Set the working directory
-WORKDIR /usr/src/app
+RUN pip3 install flask
 
-# Install the correct version of bundler
-RUN gem install bundler -v 2.5.23
+COPY ./src /app
 
-# Copy the Gemfile and Gemfile.lock first for dependency installation
-COPY Gemfile Gemfile.lock ./
+EXPOSE 5200
 
-# Install the gems
-RUN bundle install
-
-# Copy the rest of the application
-COPY . .
-
-# Expose the port defined by the environment variable
-EXPOSE $PORT
-
-# Run the application
-CMD ["ruby", "app.rb", "-o", "0.0.0.0", "-p", "$PORT"]
+ENTRYPOINT [ "python3" ]
+CMD [ "app.py" ]
