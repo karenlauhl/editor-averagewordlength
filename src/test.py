@@ -7,3 +7,6 @@ class TestAverageWordLength(unittest.TestCase):
         self.assertEqual(calculate_average_word_length("A quick brown fox"), 3.5)
         self.assertEqual(calculate_average_word_length(""), 0)
         self.assertEqual(calculate_average_word_length("Supercalifragilisticexpialidocious"), 34.0)
+
+if __name__ == '__main__':
+    unittest.main()
