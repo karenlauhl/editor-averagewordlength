@@ -7,7 +7,7 @@ RUN pip3 install flask
 
 COPY ./src /app
 
-EXPOSE 5000
+EXPOSE 5006
 
 ENTRYPOINT [ "python3" ]
 CMD [ "app.py" ]
